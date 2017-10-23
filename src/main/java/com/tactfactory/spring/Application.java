@@ -7,7 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.tactfactory.spring.entity.Address;
 import com.tactfactory.spring.entity.Customer;
+import com.tactfactory.spring.repository.AddressRepository;
 import com.tactfactory.spring.repository.CustomerRepository;
 
 @SpringBootApplication
@@ -21,12 +23,26 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(CustomerRepository repository) {
+    public CommandLineRunner demo(CustomerRepository repository, AddressRepository repoA) {
         return (args) -> {
             repository.deleteAll();
 
             Customer customer = new Customer("Mickael", "Gaillard");
+            Address add1 = new Address("Toto");
+            repoA.save(add1);
+            customer.setAddresse(add1);
+            add1.getCustomers().add(customer);
+            Address add2 = new Address("Titi");
+            repoA.save(add2);
+            customer.setAddresse(add2);
+            add2.getCustomers().add(customer);
             repository.save(customer);
+
+            customer = new Customer("Gaillard", "mickael");
+            customer.setAddresse(add2);
+            add2.getCustomers().add(customer);
+            repository.save(customer);
+
 
             repository.save(new Customer("Jack", "Bauer"));
             repository.save(new Customer("Chloe", "O'Brian"));

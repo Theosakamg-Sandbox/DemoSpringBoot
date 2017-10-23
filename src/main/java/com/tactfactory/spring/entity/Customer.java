@@ -1,10 +1,19 @@
 package com.tactfactory.spring.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Customer {
@@ -16,14 +25,62 @@ public class Customer {
     @Column
     private String firstName;
 
-    @Column
+    @Column(name="")
     private String lastName;
+
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name="address_id")
+//    private Address address;
+
+//    @OneToMany(mappedBy="customer", cascade=CascadeType.ALL)
+    @ManyToMany(targetEntity = Address.class , cascade = CascadeType.ALL)
+    @JoinTable(name="rel_A2C")
+    private List<Address> addresses;
+
+//    /**
+//     * @return the address
+//     */
+//    public Address getAddress() {
+//        return address;
+//    }
+//
+//    /**
+//     * @param address the address to set
+//     */
+//    public void setAddress(Address address) {
+//        this.address = address;
+//        if (address.getCustomer() == null) {
+//            address.setCustomer(this);
+//        }
+//    }
+
+    /**
+     * @return the addresses
+     */
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    /**
+     * @param addresses the addresses to set
+     */
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public void setAddresse(Address address) {
+        this.addresses.add(address);
+//        if (address.getCustomer() == null) {
+//            address.setCustomer(this);
+//        }
+    }
 
     protected Customer() {}
 
     public Customer(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName  = lastName;
+        this.addresses = new ArrayList<Address>();
     }
 
     @Override
